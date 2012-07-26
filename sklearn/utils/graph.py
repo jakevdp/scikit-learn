@@ -2,7 +2,9 @@
 Graph utilities and algorithms
 
 Graphs are represented with their adjacency matrices, preferably using
-sparse matrices.
+sparse matrices.  The functionality in this file was included in scipy
+versions 0.11+.  If the scipy version is available, it will be used.
+When the scipy dependency is updated, this port can be removed.
 """
 
 # Authors: Aric Hagberg <hagberg@lanl.gov>
@@ -12,7 +14,12 @@ sparse matrices.
 import numpy as np
 from scipy import sparse
 
-from .graph_shortest_path import graph_shortest_path
+# shortest path algorithm is available in scipy 0.11+
+# we'll use that if it's available
+try:
+    from scipy.sparse.csgraph import shortest_path as graph_shortest_path
+except ImportError:
+    from .graph_shortest_path import graph_shortest_path
 
 
 ###############################################################################
@@ -129,7 +136,7 @@ def _graph_laplacian_dense(graph, normed=False, return_diag=False):
     return lap
 
 
-def graph_laplacian(graph, normed=False, return_diag=False):
+def _graph_laplacian(graph, normed=False, return_diag=False):
     """ Return the Laplacian of the given graph.
     """
     if normed and (np.issubdtype(graph.dtype, np.int)
@@ -142,3 +149,11 @@ def graph_laplacian(graph, normed=False, return_diag=False):
         # We have a numpy array
         return _graph_laplacian_dense(graph, normed=normed,
                                        return_diag=return_diag)
+
+
+# a newer laplacian routine is available in scipy 0.11+.  We'll use that
+# if it's available
+try:
+    from scipy.sparse.csgraph import laplacian as graph_laplacian
+except:
+    graph_laplacian = _graph_laplacian

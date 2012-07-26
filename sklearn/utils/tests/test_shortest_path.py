@@ -50,8 +50,9 @@ def test_floyd_warshall():
     dist_matrix = generate_graph(20)
 
     for directed in (True, False):
-        graph_FW = graph_shortest_path(dist_matrix, directed, 'FW')
-        graph_py = floyd_warshall_slow(dist_matrix.copy(), directed)
+        graph_FW = graph_shortest_path(dist_matrix, directed=directed,
+                                       method='FW')
+        graph_py = floyd_warshall_slow(dist_matrix.copy(), directed=directed)
 
         assert_array_almost_equal(graph_FW, graph_py)
 
@@ -60,8 +61,9 @@ def test_dijkstra():
     dist_matrix = generate_graph(20)
 
     for directed in (True, False):
-        graph_D = graph_shortest_path(dist_matrix, directed, 'D')
-        graph_py = floyd_warshall_slow(dist_matrix.copy(), directed)
+        graph_D = graph_shortest_path(dist_matrix, directed=directed,
+                                      method='D')
+        graph_py = floyd_warshall_slow(dist_matrix.copy(), directed=directed)
 
         assert_array_almost_equal(graph_D, graph_py)
 
